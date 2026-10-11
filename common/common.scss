@@ -1,0 +1,567 @@
+// VC Conversation Pages 0.3.0
+//
+// Presentation-only by contract. Every selector is guarded by the route and
+// category class applied by the initializer. Do not move these rules into VC
+// Canvas or discourse-vc-feed: this isolation is what lets each surface evolve
+// and roll back independently.
+
+body.vc-conversation-topic {
+  // 786px preserves the native stream/timeline fit at common desktop widths.
+  // A wider stream is enabled only when the viewport has room for both.
+  --vc-conversation-stream-width: 786px;
+  --vc-conversation-avatar-column: 56px;
+  --vc-conversation-divider: rgba(var(--primary-rgb), 0.1);
+  --vc-conversation-soft-surface: rgba(var(--primary-rgb), 0.025);
+
+  // The feed plugin already renders this documented-outlet link. This layer
+  // changes only its visual weight and does not duplicate its behavior.
+  .vc-feed-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    margin-block: 0.75rem 0.35rem;
+    padding: 0.4rem 0.75rem;
+    border: 1px solid var(--vc-conversation-divider);
+    border-radius: var(--d-button-border-radius, 999px);
+    color: var(--primary-medium);
+    font-size: var(--font-down-1);
+    font-weight: 600;
+    text-decoration: none;
+    transition:
+      color 120ms ease,
+      background-color 120ms ease,
+      border-color 120ms ease;
+
+    &:hover,
+    &:focus-visible {
+      border-color: rgba(var(--tertiary-rgb), 0.32);
+      background: rgba(var(--tertiary-rgb), 0.08);
+      color: var(--tertiary);
+    }
+  }
+
+  #topic-title {
+    margin-block: 0.65rem 1rem;
+
+    h1 {
+      max-width: var(--vc-conversation-stream-width);
+      font-size: clamp(var(--font-up-2), 2.2vw, var(--font-up-4));
+      line-height: 1.15;
+      letter-spacing: -0.018em;
+    }
+
+    .topic-category {
+      margin-top: 0.45rem;
+    }
+  }
+
+  .container.posts {
+    // Leave the native topic timeline in place while giving the conversation
+    // more room than Discourse's default 690px reading column.
+    .post-stream,
+    .topic-area {
+      width: min(100%, var(--vc-conversation-stream-width));
+    }
+  }
+
+  .topic-post {
+    width: 100%;
+    border-top: 1px solid var(--vc-conversation-divider);
+
+    &:first-child {
+      border-top: 0;
+
+      article.boxed {
+        padding-top: 0.25rem;
+      }
+
+      .cooked {
+        font-size: var(--font-up-1);
+        line-height: 1.55;
+      }
+    }
+
+    article.boxed {
+      padding-block: 1rem 0.35rem;
+    }
+
+    .post__row {
+      width: 100%;
+    }
+
+    .topic-avatar {
+      width: var(--vc-conversation-avatar-column);
+      padding-top: 0;
+      border-top: 0;
+    }
+
+    .topic-body {
+      width: calc(100% - var(--vc-conversation-avatar-column));
+      border-top: 0;
+      box-sizing: border-box;
+    }
+
+    .topic-meta-data {
+      min-height: 2.25rem;
+      margin-bottom: 0.7rem;
+    }
+
+    .cooked {
+      max-width: none;
+      color: var(--primary);
+
+      > :first-child {
+        margin-top: 0;
+      }
+
+      img,
+      video,
+      .video-stream-container,
+      .shaka-video-container,
+      .lightbox-wrapper {
+        max-width: 100%;
+        border-radius: var(--d-border-radius-large, 16px);
+      }
+    }
+
+    .post__menu-area {
+      margin-top: 0.75rem;
+    }
+
+    .post-controls {
+      min-height: 2.5rem;
+      padding-top: 0.35rem;
+      border-top: 1px solid var(--vc-conversation-divider);
+
+      .actions button {
+        border-radius: var(--d-button-border-radius, 999px);
+      }
+    }
+  }
+
+  // Keep topic metadata available, but make it feel like the conclusion of
+  // the opening post instead of a competing card in the conversation.
+  .post__topic-map.topic-map--op,
+  .post__topic-map.topic-map.--op {
+    border-color: var(--vc-conversation-divider);
+    background: var(--vc-conversation-soft-surface);
+    box-shadow: none;
+  }
+
+  .topic-navigation.with-timeline {
+    opacity: 0.72;
+    transition: opacity 120ms ease;
+
+    &:hover,
+    &:focus-within {
+      opacity: 1;
+    }
+  }
+
+  .related-topics-wrapper,
+  .suggested-topics-wrapper {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--vc-conversation-divider);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// 0.2.0 personality layer, tightened in 0.3.0
+// ---------------------------------------------------------------------------
+// These flourishes deliberately use Canvas/Discourse scheme variables rather
+// than fixed brand colors. The conversation page gains a recognizable VC
+// voice while remaining compatible with both site color schemes.
+body.vc-conversation-topic {
+  --vc-conversation-glow: rgba(var(--tertiary-rgb), 0.13);
+  // VC Canvas exposes --love as a color but does not expose --love-rgb.
+  // Transparent surfaces therefore use supported RGB tokens; --love remains
+  // available for solid one-pixel signatures and gradients.
+  --vc-conversation-rose: rgba(var(--tertiary-rgb), 0.1);
+  --vc-conversation-hairline: rgba(var(--primary-rgb), 0.085);
+
+  // Editorial topic banner: a quiet wash rather than a marketing-style hero.
+  #topic-title {
+    position: relative;
+    isolation: isolate;
+    box-sizing: border-box;
+    padding: 1.1rem 1.3rem 1.15rem;
+    overflow: hidden;
+    border: 1px solid var(--vc-conversation-hairline);
+    border-radius: calc(var(--d-border-radius-large, 16px) + 6px);
+    background:
+      linear-gradient(
+        112deg,
+        rgba(var(--tertiary-rgb), 0.105),
+        rgba(var(--highlight-rgb), 0.12) 48%,
+        var(--secondary) 82%
+      );
+    box-shadow: 0 18px 44px -38px rgba(var(--primary-rgb), 0.7);
+
+    &::before,
+    &::after {
+      position: absolute;
+      z-index: -1;
+      border-radius: 999px;
+      content: "";
+      pointer-events: none;
+    }
+
+    &::before {
+      top: -3.25rem;
+      right: 7%;
+      width: 9rem;
+      height: 9rem;
+      background: radial-gradient(
+        circle,
+        rgba(var(--highlight-rgb), 0.2),
+        transparent 68%
+      );
+    }
+
+    &::after {
+      right: 1.35rem;
+      bottom: 0.7rem;
+      width: 2.75rem;
+      height: 0.25rem;
+      background: linear-gradient(
+        90deg,
+        var(--tertiary),
+        var(--love)
+      );
+      opacity: 0.7;
+    }
+
+    h1 {
+      position: relative;
+      text-wrap: balance;
+    }
+  }
+
+  // The opening post is the conversation's invitation. Its restrained card
+  // treatment distinguishes it from replies without changing its markup.
+  .topic-post:first-child article.boxed {
+    position: relative;
+    border: 1px solid rgba(var(--tertiary-rgb), 0.12);
+    border-radius: calc(var(--d-border-radius-large, 16px) + 4px);
+    background: linear-gradient(
+      180deg,
+      rgba(var(--tertiary-rgb), 0.075),
+      rgba(var(--highlight-rgb), 0.075) 48%,
+      transparent 78%
+    );
+    box-shadow: 0 18px 42px -38px rgba(var(--primary-rgb), 0.8);
+
+    &::before {
+      position: absolute;
+      inset: 0 0 auto;
+      height: 3px;
+      background: linear-gradient(
+        90deg,
+        var(--tertiary),
+        var(--love) 58%,
+        transparent
+      );
+      content: "";
+      opacity: 0.78;
+      pointer-events: none;
+    }
+  }
+
+  .topic-post:first-child {
+    .names .username a,
+    .names .full-name a {
+      font-weight: 700;
+    }
+
+    .topic-meta-data {
+      min-height: 1.75rem;
+      margin-bottom: 0.15rem;
+      padding: 0.25rem 0.75rem 0.3rem;
+      border-bottom: 1px solid rgba(var(--primary-rgb), 0.065);
+    }
+
+    .topic-body {
+      padding-top: 0.35rem;
+    }
+
+    .cooked {
+      padding: 0.65rem 0.75rem 0.2rem;
+      font-size: var(--font-0);
+      line-height: 1.55;
+
+      > p:first-child {
+        margin-bottom: 0.4rem;
+        color: var(--primary);
+        font-family: ui-serif, Georgia, Cambria, "Times New Roman", serif;
+        font-size: clamp(1.08rem, 1.45vw, 1.22rem);
+        font-weight: 500;
+        letter-spacing: -0.012em;
+        line-height: 1.48;
+      }
+
+      > p:last-of-type {
+        margin-bottom: 0;
+      }
+    }
+
+    .post__menu-area {
+      margin: 0.35rem 0 0.45rem;
+      padding-left: 0.75rem;
+    }
+
+    .post-controls {
+      min-height: 2.15rem;
+      padding-top: 0.2rem;
+    }
+  }
+
+  // Avatar halos carry the Canvas violet/rose palette through the stream and
+  // work with both portrait avatars and the site's irregular logo avatars.
+  .topic-avatar .avatar {
+    box-shadow:
+      0 0 0 3px var(--secondary),
+      0 0 0 5px rgba(var(--tertiary-rgb), 0.2),
+      0 8px 18px -12px rgba(var(--primary-rgb), 0.8);
+  }
+
+  .topic-post:first-child .topic-avatar .avatar {
+    box-shadow:
+      0 0 0 3px var(--secondary),
+      0 0 0 5px var(--love),
+      0 10px 22px -13px rgba(var(--primary-rgb), 0.9);
+  }
+
+  // Replies become a sequence of subtly alternating conversation cards. The
+  // accent is visual only; post ownership and nesting remain native Discourse.
+  .topic-post:not(:first-child) article.boxed {
+    border-radius: var(--d-border-radius-large, 16px);
+    background: linear-gradient(
+      90deg,
+      rgba(var(--primary-rgb), 0.022),
+      transparent 62%
+    );
+    box-shadow: inset 3px 0 0 rgba(var(--tertiary-rgb), 0.18);
+  }
+
+  .topic-post:not(:first-child):nth-child(odd) article.boxed {
+    box-shadow: inset 3px 0 0 var(--love);
+  }
+
+  // Original-author follow-ups share one restrained signature. This is
+  // derived from Discourse's existing topic-owner class, not duplicated data.
+  .topic-post.topic-owner:not(:first-child) article.boxed {
+    background: linear-gradient(
+      90deg,
+      rgba(var(--highlight-rgb), 0.09),
+      rgba(var(--tertiary-rgb), 0.025) 42%,
+      transparent 72%
+    );
+    box-shadow: inset 3px 0 0 var(--love);
+  }
+
+  .topic-post.topic-owner:not(:first-child) .topic-avatar .avatar {
+    box-shadow:
+      0 0 0 3px var(--secondary),
+      0 0 0 4px var(--love),
+      0 8px 18px -12px rgba(var(--primary-rgb), 0.8);
+  }
+
+  .cooked {
+    blockquote,
+    aside.quote {
+      border-left: 4px solid var(--tertiary);
+      border-radius: 0 var(--d-border-radius, 8px) var(--d-border-radius, 8px) 0;
+      background: linear-gradient(
+        90deg,
+        rgba(var(--tertiary-rgb), 0.09),
+        rgba(var(--tertiary-rgb), 0.025)
+      );
+    }
+
+    ol li::marker,
+    ul li::marker {
+      color: var(--tertiary);
+      font-weight: 700;
+    }
+
+    a:not(.mention):not(.hashtag-cooked) {
+      text-decoration-color: rgba(var(--tertiary-rgb), 0.38);
+      text-decoration-thickness: 0.08em;
+      text-underline-offset: 0.14em;
+    }
+  }
+
+  .post-controls {
+    .reply {
+      border-radius: var(--d-button-border-radius, 999px);
+      background: rgba(var(--tertiary-rgb), 0.075);
+      color: var(--tertiary);
+
+      &:hover,
+      &:focus-visible {
+        background: rgba(var(--tertiary-rgb), 0.14);
+      }
+    }
+
+    .like-button:hover,
+    .like-button:focus-visible {
+      border-radius: var(--d-button-border-radius, 999px);
+      background: var(--vc-conversation-rose);
+    }
+  }
+
+  .post__topic-map.topic-map.--op,
+  .topic-map.--bottom {
+    box-sizing: border-box;
+    width: 100%;
+    margin-top: 0;
+    overflow: hidden;
+    border: 0;
+    border-top: 1px solid var(--vc-conversation-hairline);
+    border-radius: 0 0 calc(var(--d-border-radius-large, 16px) + 3px)
+      calc(var(--d-border-radius-large, 16px) + 3px);
+    background: linear-gradient(
+      90deg,
+      rgba(var(--tertiary-rgb), 0.06),
+      rgba(var(--highlight-rgb), 0.08)
+    );
+  }
+
+  .topic-map.--bottom {
+    margin-top: 0.65rem;
+    border: 1px solid var(--vc-conversation-hairline);
+    border-radius: var(--d-border-radius-large, 16px);
+    background: linear-gradient(
+      90deg,
+      rgba(var(--tertiary-rgb), 0.045),
+      rgba(var(--highlight-rgb), 0.055)
+    );
+  }
+}
+
+// Machine-derived micropost titles remain useful to search, browser history,
+// accessibility, and core Discourse surfaces. They are intentionally subdued
+// here, not hidden. Set the component setting to restore normal prominence.
+body.vc-conversation-topic.vc-conversation-quiet-title #topic-title h1 {
+  color: var(--primary-medium);
+  font-size: var(--font-up-1);
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.3;
+}
+
+body.vc-conversation-topic.vc-conversation-quiet-title #topic-title {
+  padding-block: 0.75rem;
+  border-radius: var(--d-border-radius-large, 16px);
+  background: linear-gradient(
+    105deg,
+    rgba(var(--tertiary-rgb), 0.065),
+    var(--secondary) 74%
+  );
+}
+
+@media (min-width: 1400px) {
+  body.vc-conversation-topic {
+    --vc-conversation-stream-width: 840px;
+  }
+}
+
+@media (max-width: 700px) {
+  body.vc-conversation-topic {
+    .vc-feed-back {
+      margin-block: 0.4rem 0.15rem;
+    }
+
+    #topic-title {
+      margin-block: 0.45rem 0.75rem;
+      padding: 0.9rem 1rem;
+      border-radius: calc(var(--d-border-radius-large, 16px) + 2px);
+
+      h1 {
+        font-size: var(--font-up-2);
+        line-height: 1.2;
+      }
+    }
+
+    .container.posts .post-stream,
+    .container.posts .topic-area {
+      width: 100%;
+    }
+
+    .topic-post {
+      article.boxed {
+        padding-block: 0.75rem 0.25rem;
+      }
+
+      &:first-child article.boxed,
+      &:not(:first-child) article.boxed {
+        border-radius: var(--d-border-radius-large, 16px);
+        box-shadow: none;
+      }
+
+      &:first-child {
+        .topic-meta-data {
+          padding-inline: 0.55rem;
+        }
+
+        .cooked {
+          padding: 0.55rem 0.55rem 0.15rem;
+
+          > p:first-child {
+            font-size: 1.08rem;
+            line-height: 1.45;
+          }
+        }
+
+        .post__menu-area {
+          padding-left: 0.55rem;
+        }
+      }
+
+      .topic-avatar {
+        // Restore Discourse's compact mobile author-row geometry. The
+        // desktop avatar/body column calculation must not leak into mobile.
+        width: auto;
+      }
+
+      .topic-body {
+        width: 100%;
+      }
+
+      &:first-child .cooked {
+        font-size: var(--font-0);
+        line-height: 1.5;
+      }
+
+      .cooked img,
+      .cooked video,
+      .cooked .video-stream-container,
+      .cooked .shaka-video-container,
+      .cooked .lightbox-wrapper {
+        border-radius: var(--d-border-radius, 8px);
+      }
+    }
+
+    .topic-navigation.with-timeline {
+      opacity: 1;
+    }
+  }
+
+  body.vc-conversation-topic.vc-conversation-quiet-title #topic-title h1 {
+    font-size: var(--font-0);
+  }
+
+  body.vc-conversation-topic.vc-conversation-quiet-title #topic-title {
+    padding-block: 0.65rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.vc-conversation-topic {
+    .vc-feed-back,
+    .topic-navigation.with-timeline {
+      transition: none;
+    }
+  }
+}

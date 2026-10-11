@@ -1,0 +1,14 @@
+vc_conversation_pages_enabled:
+  default: true
+  type: bool
+  description: "Master switch for the VC conversation-page presentation layer."
+
+vc_conversation_category_ids:
+  default: ""
+  type: list
+  description: "Optional category ID override. Leave empty to inherit discourse-vc-feed's vc_feed_categories setting."
+
+vc_conversation_emphasize_micropost_titles:
+  default: false
+  type: bool
+  description: "Show wall-generated micropost titles at normal topic-title prominence. Off keeps generated titles as quiet context."

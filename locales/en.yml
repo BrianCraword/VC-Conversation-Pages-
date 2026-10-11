@@ -1,0 +1,7 @@
+en:
+  theme_metadata:
+    description: "A scoped conversation-page presentation layer for VC Feed topic categories."
+    settings:
+      vc_conversation_pages_enabled: "Enable VC conversation-page styling"
+      vc_conversation_category_ids: "Conversation category IDs"
+      vc_conversation_emphasize_micropost_titles: "Emphasize generated micropost titles"
